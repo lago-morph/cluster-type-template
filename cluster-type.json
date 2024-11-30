@@ -2,5 +2,5 @@
     "cluster_type": "template",
     "repository_source": "git@github.com:lago-morph/cluster-type-template.git",
     "region" : "us-east-1",
-    "private_key_file" : "~/secrets/default-ro-key"
+    "private_key_file" : "../secrets/default-ro-key"
 }
