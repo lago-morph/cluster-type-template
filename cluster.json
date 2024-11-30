@@ -1,0 +1,14 @@
+{
+    "hostclass": [
+        {
+            "class_name": "public-webserver",
+            "num_hosts": 1,
+            "public_ip": true
+        },
+        {
+            "class_name": "bastion",
+            "num_hosts": 1,
+            "public_ip": true
+        }
+    ]
+}
