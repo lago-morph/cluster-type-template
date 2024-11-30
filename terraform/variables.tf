@@ -21,11 +21,6 @@ variable "region" {
   description = "region key from cluster-type.json config file"
 }
 
-variable "private_key" {
-  type        = string
-  description = "private_key to access repository_source repository"
-}
-
 variable "private_key_file" {
   type        = string
   description = "private_key_file key from cluster-type.json config file (not used)"

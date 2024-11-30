@@ -23,9 +23,7 @@ MAKEFLAGS += --jobs
 CLUSTER_TYPE_CONFIG = ../cluster-type.json
 CLUSTER_CONFIG = ../cluster.json
 VAR_BRANCH = -var branch=$(shell git rev-parse --abbrev-ref HEAD)
-KEY_FILE = $(shell cat $(CLUSTER_TYPE_CONFIG) | jq -r .private_key_file)
-VAR_KEY = -var private_key='$(shell cat $(KEY_FILE))'
-TF_VARS = $(VAR_BRANCH) $(VAR_KEY)
+TF_VARS = $(VAR_BRANCH)
 TF_VAR_FILES = -var-file=$(CLUSTER_TYPE_CONFIG) -var-file=$(CLUSTER_CONFIG)
 TF_ARGS = $(TF_VARS) $(TF_VAR_FILES)
 
@@ -56,14 +54,14 @@ apply-auto-approve: check-config
 	terraform apply $(TF_ARGS) --auto-approve
 
 taint-host:
-	terraform taint 'aws_instance.host[*]'
+	terraform taint 'module.cluster.host[*]'
 
 taint-master:
-	terraform taint 'aws_instance.salt-master'
+	terraform taint module.cluster.aws_instance.salt_master
 
 
 ssh:
 	ssh  -A -o "StrictHostKeyChecking no" ubuntu@$(HOST_IP)
 
-ssh-master: HOST_IP = $(SM)
+ssh-master: HOST_IP = $(shell terraform output -raw salt_master_public_ip)
 ssh-master: ssh

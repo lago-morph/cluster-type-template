@@ -1,3 +1,7 @@
+output "salt_master_public_ip" {
+  value = module.cluster.salt_master_public_ip
+}
+
 output "hostclass_list" {
   value = var.hostclass
 }
@@ -20,9 +24,4 @@ output "region" {
 
 output "private_key_file" {
   value = var.private_key_file
-}
-
-output "private_key" {
-  description = "DON'T DO THIS"
-  value       = var.private_key
 }
