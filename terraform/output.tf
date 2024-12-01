@@ -25,3 +25,11 @@ output "region" {
 output "private_key_file" {
   value = var.private_key_file
 }
+
+output "public_ip" {
+  value = module.cluster.public_ip
+}
+
+output "hostmap" {
+  value = module.cluster.hostmap
+}
