@@ -1,7 +1,7 @@
 {
     "hostclass": [
         {
-            "class_name": "public-webserver",
+            "class_name": "webserver",
             "num_hosts": 1,
             "public_ip": true
         },
