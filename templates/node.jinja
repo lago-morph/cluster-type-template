@@ -1,0 +1,9 @@
+environment: base
+
+classes:
+  - {{ host_class }}
+
+pillar:
+  network:
+    public_ip: {{ public_ip }}
+    private_ip: {{ private_ip }}
