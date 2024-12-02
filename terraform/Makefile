@@ -9,6 +9,7 @@ Run corresponding Terraform commands with additional error checking
 - taint-master		(taints the salt-master EC2 instance to recreate it w/apply)
 - apply
 - apply-auto-approve
+- destroy
 
 Connect to the bastion host (if defined)
 * not yet *- ssh-cluster
@@ -52,6 +53,8 @@ apply: check-config
 	terraform apply $(TF_ARGS)
 apply-auto-approve: check-config
 	terraform apply $(TF_ARGS) --auto-approve
+destroy: check-config
+	terraform destroy $(TF_ARGS)
 
 taint-host:
 	terraform taint 'module.cluster.host[*]'
