@@ -22,7 +22,7 @@ nkey=$(jq -r '[.[] |
 template=/opt/gitrepo/templates/node.jinja
 tempdir=/tmp
 destination=/srv/saltclass/nodes
-jpath=/root/.local/bin/jinja2
+jpath=/root/.local/bin
 jq -r -c '.[] | .Key, .Value' <<< $nkey |
 while read -r host_name; read -r host_data; do
     echo "hostname: $host_name";
