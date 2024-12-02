@@ -1,5 +1,8 @@
 #!/bin/bash
 
+REGION=`curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq .region -r`
+aws configure set region $REGION
+
 CLUSTER_NAME=$(curl http://169.254.169.254/latest/meta-data/tags/instance/cluster_name)
 
 all_instances=$(aws ec2 describe-instances --filter "Name=tag:cluster_name,Values=$CLUSTER_NAME")
@@ -19,10 +22,10 @@ nkey=$(jq -r '[.[] |
 template=/opt/gitrepo/templates/node.jinja
 tempdir=/tmp
 destination=/srv/saltclass/nodes
+jpath=/root/.local/bin/jinja2
 jq -r -c '.[] | .Key, .Value' <<< $nkey |
 while read -r host_name; read -r host_data; do
     echo "hostname: $host_name";
-    (echo $host_data | jinja2 $template) > $tempdir/$host_name.yml;
-    sudo mv $tempdir/$host_name.yml $destination;
+    (echo $host_data | $jpath/jinja2 $template) > $tempdir/$host_name.yml;
+    mv $tempdir/$host_name.yml $destination;
 done
-
