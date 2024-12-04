@@ -26,6 +26,7 @@ VAR_BRANCH = -var branch=$(CURRENT_BRANCH)
 TF_VARS = $(VAR_BRANCH)
 TF_VAR_FILES = -var-file=$(CLUSTER_TYPE_CONFIG) -var-file=$(CLUSTER_CONFIG)
 TF_ARGS = $(TF_VARS) $(TF_VAR_FILES)
+SSH_ARGS = -A -o "StrictHostKeyChecking no"
 
 .ONESHELL:
 
@@ -61,11 +62,8 @@ taint-host: set-workspace
 taint-master: set-workspace
 	terraform taint module.cluster.aws_instance.salt_master
 
-ssh:
-	ssh  -A -o "StrictHostKeyChecking no" ubuntu@$(HOST_IP)
-
-ssh-master: HOST_IP = $(shell terraform workspace select $(CURRENT_BRANCH); terraform output -raw salt_master_public_ip)
-ssh-master: ssh
+ssh-master: set-workspace
+	ssh $(SSH_ARGS) ubuntu@$(shell terraform output -raw salt_master_public_ip)
 
 create-resources:
 	aws s3 mb s3://$(S3B)
