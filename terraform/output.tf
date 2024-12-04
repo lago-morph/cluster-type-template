@@ -26,8 +26,8 @@ output "private_key_file" {
   value = var.private_key_file
 }
 
-output "public_ip" {
-  value = module.cluster.public_ip
+output "public_ips" {
+  value = module.cluster.public_ips
 }
 
 output "hostmap" {
