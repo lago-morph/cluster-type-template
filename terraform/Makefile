@@ -3,6 +3,8 @@ Convenience helpers for aws-salt
 
 backend-init    Create S3 bucket, DynamoDB table, and output to backend.tf
 
+set-workspace   set the terraform workspace to match the current branch
+
 Run corresponding Terraform commands with additional error checking
 - init		
 - plan
