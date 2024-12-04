@@ -21,7 +21,8 @@ MAKEFLAGS += --jobs
 
 CLUSTER_TYPE_CONFIG = ../cluster-type.json
 CLUSTER_CONFIG = ../cluster.json
-VAR_BRANCH = -var branch=$(shell git rev-parse --abbrev-ref HEAD)
+CURRENT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
+VAR_BRANCH = -var branch=$(CURRENT_BRANCH)
 TF_VARS = $(VAR_BRANCH)
 TF_VAR_FILES = -var-file=$(CLUSTER_TYPE_CONFIG) -var-file=$(CLUSTER_CONFIG)
 TF_ARGS = $(TF_VARS) $(TF_VAR_FILES)
@@ -43,27 +44,27 @@ check-config:
 	    false; \
 	fi
 
-init: check-config
+init: check-config set-workspace
 	terraform init $(TF_ARGS)
-plan: check-config
+plan: check-config set-workspace
 	terraform plan $(TF_ARGS) 
-apply: check-config
+apply: check-config set-workspace
 	terraform apply $(TF_ARGS)
-apply-auto-approve: check-config
+apply-auto-approve: check-config set-workspace
 	terraform apply $(TF_ARGS) --auto-approve
-destroy: check-config
+destroy: check-config set-workspace
 	terraform destroy $(TF_ARGS)
 
-taint-host:
+taint-host: set-workspace
 	terraform taint 'module.cluster.host[*]'
 
-taint-master:
+taint-master: set-workspace
 	terraform taint module.cluster.aws_instance.salt_master
 
 ssh:
 	ssh  -A -o "StrictHostKeyChecking no" ubuntu@$(HOST_IP)
 
-ssh-master: HOST_IP = $(shell terraform output -raw salt_master_public_ip)
+ssh-master: HOST_IP = $(shell terraform workspace select $(CURRENT_BRANCH); terraform output -raw salt_master_public_ip)
 ssh-master: ssh
 
 create-resources:
@@ -93,7 +94,9 @@ backend-init: DDBKEY = LockID
 backend-init: REGION = $(shell aws configure get region)
 backend-init: TFBACKENDFILE := backend.tf
 
-backend-init: create-resources output-file
+backend-init: create-resources output-file set-workspace
 	terraform fmt
 	terraform init
 
+set-workspace:
+		terraform workspace select -or-create $(CURRENT_BRANCH)
